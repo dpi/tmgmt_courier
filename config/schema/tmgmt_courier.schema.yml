@@ -1,0 +1,30 @@
+tmgmt_courier.register:
+  type: mapping
+  label: 'Register'
+  mapping:
+    type:
+      type: label
+      label: 'Type'
+    template_collections:
+      type: sequence
+      label: 'Template collections'
+      sequence:
+        type: tmgmt_courier.template_collection_info.[%key]
+        label: 'Template Collection'
+
+tmgmt_courier.template_collection_info.*:
+  type: mapping
+  label: 'Template Collection info'
+  mapping:
+    id:
+      type: integer
+      label: 'Id'
+    uuid:
+      type: string
+      label: 'Uuid'
+    identity:
+      type: integer
+      label: 'Identity id'
+    enabled:
+      type: boolean
+      label: 'Enabled'

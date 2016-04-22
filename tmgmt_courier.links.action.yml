@@ -1,5 +1,5 @@
-tmgmt_courier.add_notification:
+tmgmt_courier.add_template_collection:
   route_name: entity.default_template_collection.add_form
-  title: 'Add notification'
+  title: 'Add template collection'
   appears_on:
     - entity.default_template_collection.collection

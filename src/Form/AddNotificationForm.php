@@ -87,15 +87,15 @@ class AddNotificationForm extends EntityForm {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $template_collection_ids = \Drupal::keyValue('tmgmt_courier_template_collections');
+    $register = \Drupal::configFactory()->getEditable('tmgmt_courier.register');
 
     // Create template collection.
-    $mail_id = $form_state->getValue('trigger');
+    $type = $form_state->getValue('trigger');
     /** @var \Drupal\courier\Entity\TemplateCollection $template_collection */
     $template_collection = TemplateCollection::create();
 
     $types = \Drupal::service('tmgmt_courier.trigger_repository')->getAll();
-    $context_id = $types[$mail_id]['context'];
+    $context_id = $types[$type]['context'];
 
     // Create global context for accounts if it does not exist.
     /** @var \Drupal\courier\CourierContextInterface $courier_context */
@@ -106,19 +106,20 @@ class AddNotificationForm extends EntityForm {
 
     if ($template_collection->save()) {
       $this->courierManager->addTemplates($template_collection);
-      $this->copyTwigToCourierEmail($template_collection, $mail_id);
+      $this->copyTwigToCourierEmail($template_collection, $type);
       $template_collection->save();
     }
 
-    $value = [];
-    if ($template_collection_ids->has($mail_id)) {
-      $value = $template_collection_ids->get($mail_id);
-    }
+    $value = $register->get($type);
     $value[$template_collection->id()] = [
+      'id' => $template_collection->id(),
+      // @todo Add uuid key in TemplateCollection
+      'uuid' => $template_collection->uuid(),
       'identity' => $form_state->getValue('identity'),
       'enabled' => FALSE,
     ];
-    $template_collection_ids->set($mail_id, $value);
+    $register->set($type, $value);
+    $register->save();
 
     $form_state->setRedirect('entity.default_template_collection.collection');
   }

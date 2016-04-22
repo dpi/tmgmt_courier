@@ -84,7 +84,7 @@ class NotificationForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
 
-    $key_value = \Drupal::keyValue('tmgmt_courier_template_collections');
+    $register = \Drupal::configFactory()->get('tmgmt_courier.register');
 
     // Actions.
     $form['actions'] = [
@@ -117,26 +117,28 @@ class NotificationForm extends ConfigFormBase {
       '#items' => [],
     ];
 
-    foreach ($key_value->getAll() as $template_collection_type => $template_collection_trigger) {
+    foreach ($register->getRawData() as $template_collection_type => $template_collection_trigger) {
       if ($template_collections = TemplateCollection::loadMultiple(array_keys($template_collection_trigger))) {
         /** @var \Drupal\courier\Entity\TemplateCollection $template_collection */
-        $template_collection = reset($template_collections);
-        /** @var \Drupal\user\Entity\User $identity */
-        $identity = User::load($template_collection_trigger[$template_collection->id()]['identity']);
-        $definition = $types = \Drupal::service('tmgmt_courier.trigger_repository')->getDefinitionOfType($template_collection_type);
-        /** @var \Drupal\courier\Entity\CourierContext $context */
-        $context = CourierContext::load($definition['context']);
-        $form['list']['#items'][$template_collection_type . '_' . $template_collection->id()] = [
-          '#title' => $this->t('@module: @title (@status) To "@receiver"', [
-            '@title' => $definition['label'],
-            '@module' => \Drupal::moduleHandler()->getName($context->label()),
-            '@status' => $template_collection_trigger[$template_collection->id()]['enabled'] ? $this->t('enabled') : $this->t('disabled'),
-            '@receiver' => $identity->getDisplayName(),
-          ]),
-          '#description' => $definition['description'],
-          '#template_collection' => $template_collection,
-          '#operations' => $this->getOperations($template_collection->id()),
-        ];
+        foreach ($template_collections as $template_collection) {
+          /** @var \Drupal\user\Entity\User $identity */
+          $identity = User::load($template_collection_trigger[$template_collection->id()]['identity']);
+          $definition = $types = \Drupal::service('tmgmt_courier.trigger_repository')
+            ->getDefinitionOfType($template_collection_type);
+          /** @var \Drupal\courier\Entity\CourierContext $context */
+          $context = CourierContext::load($definition['context']);
+          $form['list']['#items'][$template_collection_type . '_' . $template_collection->id()] = [
+            '#title' => $this->t('@module: @title (@status) To "@receiver"', [
+              '@title' => $definition['label'],
+              '@module' => \Drupal::moduleHandler()->getName($context->label()),
+              '@status' => $template_collection_trigger[$template_collection->id()]['enabled'] ? $this->t('enabled') : $this->t('disabled'),
+              '@receiver' => $identity->getDisplayName(),
+            ]),
+            '#description' => $definition['description'],
+            '#template_collection' => $template_collection,
+            '#operations' => $this->getOperations($template_collection->id()),
+          ];
+        }
       }
     }
 
@@ -152,12 +154,12 @@ class NotificationForm extends ConfigFormBase {
     // Template collections keyed by mail ID.
     /** @var \Drupal\courier\TemplateCollectionInterface[][] $template_collections */
     $template_collections = [];
-    $key_value = \Drupal::keyValue('tmgmt_courier_template_collections');
-    foreach ($key_value->getAll() as $mail_id => $template_collection_ids) {
+    $register = \Drupal::configFactory()->getEditable('tmgmt_courier.register');
+    foreach ($register->getRawData() as $type => $template_collection_ids) {
       if ($partial_template_collections = TemplateCollection::loadMultiple(array_keys($template_collection_ids))) {
         /** @var \Drupal\courier\TemplateCollectionInterface $template_collection */
         foreach ($partial_template_collections as $template_collection) {
-          $template_collections[$mail_id][$template_collection->id()] = $template_collection;
+          $template_collections[$type][$template_collection->id()] = $template_collection;
         }
       }
     }
@@ -173,22 +175,24 @@ class NotificationForm extends ConfigFormBase {
     $operation = $form_state->getValue('operation');
     foreach ($checkboxes as $key) {
       $last = strrpos($key, '_');
-      $mail_id = trim(substr($key, 0, $last));
+      $type = trim(substr($key, 0, $last));
       $id = trim(substr($key, $last + 1));
-      if (isset($template_collections[$mail_id][$id])) {
+      if (isset($template_collections[$type][$id])) {
         if (in_array($operation, ['enable', 'disable'])) {
           $enable = $operation == 'enable';
-          $value = $key_value->get($mail_id);
+          $value = $register->get($type);
           $value[$id]['enabled'] = $enable;
-          $key_value->set($mail_id, $value);
+          $register->set($type, $value);
+          $register->save();
           $message = $enable ? $this->t('Messages enabled.') : $this->t('Messages disabled.');
         }
         elseif ($operation == 'delete') {
-          $template_collections[$mail_id][$id]->delete();
-          unset($template_collections[$mail_id][$id]);
-          $value = $key_value->get($mail_id);
+          $template_collections[$type][$id]->delete();
+          unset($template_collections[$type][$id]);
+          $value = $register->get($type);
           unset($value[$id]);
-          $key_value->set($mail_id, $value);
+          $register->set($type, $value);
+          $register->save();
           $message = $this->t('Messages deleted');
         }
       }
@@ -214,9 +218,9 @@ class NotificationForm extends ConfigFormBase {
       'url' => new Url('entity.default_template_collection.delete_form', ['template_collection' => $notification_id]),
       'query' => $destination,
     ];
-    $links['receiver'] = [
+    $links['recipient'] = [
       'title' => $this->t('Change receiver'),
-      'url' => new Url('entity.default_template_collection.receiver', ['template_collection' => $notification_id]),
+      'url' => new Url('entity.default_template_collection.recipient', ['template_collection' => $notification_id]),
       'query' => $destination,
     ];
 

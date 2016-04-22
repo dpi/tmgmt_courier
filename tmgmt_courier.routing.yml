@@ -22,10 +22,10 @@ entity.default_template_collection.delete_form:
   requirements:
     _permission: 'manage tmgmt courier'
 
-entity.default_template_collection.receiver:
-  path: '/admin/config/communication/courier/template_collections/{template_collection}/receiver'
+entity.default_template_collection.recipient:
+  path: '/admin/config/communication/courier/template_collections/{template_collection}/recipient'
   defaults:
     _title: 'Change recipient'
-    _entity_form: default_template_collection.receiver
+    _entity_form: default_template_collection.recipient
   requirements:
     _permission: 'manage tmgmt courier'

@@ -16,8 +16,8 @@ use Drupal\courier\TemplateCollectionInterface;
 function tmgmt_courier_entity_access(EntityInterface $entity, $operation, AccountInterface $account) {
   if ($operation == 'templates' && $entity instanceof TemplateCollectionInterface) {
     // Determine if template collection belongs to tmgmt_notifications.
-    $template_collection_ids = \Drupal::keyValue('tmgmt_courier_template_collections')->getAll();
-    $templates = array_filter($template_collection_ids, function ($message_type) use (&$entity) {
+    $register = \Drupal::configFactory()->get('tmgmt_courier.register');
+    $templates = array_filter($register->getRawData(), function ($message_type) use (&$entity) {
       return array_key_exists($entity->id(), $message_type);
     });
     if (!$entity->isNew() && !empty($templates)) {

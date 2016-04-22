@@ -22,10 +22,9 @@ class Notification {
    *   Array of tokens.
    */
   public function sendNotification($type, array $tokens) {
-    $template_collection_ids = \Drupal::keyValue('tmgmt_courier_template_collections');
-    if ($template_collection_ids->has($type)) {
+    $register = \Drupal::configFactory()->get('tmgmt_courier.register');
+    if ($template_collections = $register->get($type)) {
       $mqi = NULL;
-      $template_collections = $template_collection_ids->get($type);
       foreach ($template_collections as $id => $properties) {
         if ($properties['enabled']) {
           $template_collection = TemplateCollection::load($id);

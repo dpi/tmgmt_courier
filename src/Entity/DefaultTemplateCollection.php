@@ -15,7 +15,7 @@ use Drupal\courier\Entity\TemplateCollection;
  *     "form" = {
  *       "add" = "Drupal\tmgmt_courier\Form\AddNotificationForm",
  *       "delete" = "Drupal\Core\Entity\EntityDeleteForm",
- *       "receiver" = "Drupal\tmgmt_courier\Form\ReceiverForm",
+ *       "recipient" = "Drupal\tmgmt_courier\Form\RecipientForm",
  *     },
  *     "list_builder" = "Drupal\Core\Entity\EntityListBuilder",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
@@ -29,6 +29,7 @@ use Drupal\courier\Entity\TemplateCollection;
  *     "canonical" = "/admin/config/communication/courier/template_collections/{template_collection}",
  *     "add-form" = "/admin/config/communication/courier/template_collections/add",
  *     "delete-form" = "/admin/config/communication/courier/template_collections/{template_collection}/delete",
+ *     "recipient" = "/admin/config/communication/courier/template_collections/{template_collection}/recipient",
  *   }
  * )
  */

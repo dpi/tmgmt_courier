@@ -1,5 +1,5 @@
 tmgmt_courier.config:
-  title: 'TMGMT notifications settings'
+  title: 'Template collections'
   parent: system.admin_config_communication
-  description: 'Manage TMGMT notifications settings.'
+  description: 'List of template collections.'
   route_name: entity.default_template_collection.collection
