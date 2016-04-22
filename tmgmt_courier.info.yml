@@ -1,0 +1,6 @@
+name: TMGMT Courier
+type: module
+description: 'Contains the API that TMGMT expects from Courier.'
+core: 8.x
+dependencies:
+  - courier

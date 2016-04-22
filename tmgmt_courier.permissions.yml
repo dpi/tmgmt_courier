@@ -1,0 +1,4 @@
+manage tmgmt courier:
+  title: 'Manage TMGMT Courier'
+  description: 'Manage TMGMT courier notifications.'
+  restrict access: TRUE

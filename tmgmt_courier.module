@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @file
+ * Main module file for the TMGMT Notifications module.
+ */
+
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\courier\TemplateCollectionInterface;
+
+/**
+ * Implements hook_entity_access().
+ */
+function tmgmt_courier_entity_access(EntityInterface $entity, $operation, AccountInterface $account) {
+  if ($operation == 'templates' && $entity instanceof TemplateCollectionInterface) {
+    // Determine if template collection belongs to tmgmt_notifications.
+    $template_collection_ids = \Drupal::keyValue('tmgmt_courier_template_collections')->getAll();
+    $templates = array_filter($template_collection_ids, function ($message_type) use (&$entity) {
+      return array_key_exists($entity->id(), $message_type);
+    });
+    if (!$entity->isNew() && !empty($templates)) {
+      return AccessResult::allowedIfHasPermission($account, 'administer account settings');
+    }
+  }
+  return AccessResult::neutral();
+}

@@ -1,0 +1,6 @@
+services:
+  tmgmt_courier.notification:
+    class: Drupal\tmgmt_courier\Notification
+  tmgmt_courier.trigger_repository:
+    class: Drupal\tmgmt_courier\TriggerRepository
+    arguments: ['@module_handler']

@@ -1,0 +1,31 @@
+entity.default_template_collection.collection:
+  path: '/admin/config/communication/courier/template_collections'
+  defaults:
+    _form: '\Drupal\tmgmt_courier\Form\NotificationForm'
+    _title: 'Notification list'
+  requirements:
+    _permission: 'manage tmgmt courier'
+
+entity.default_template_collection.add_form:
+  path: '/admin/config/communication/courier/template_collections/add'
+  defaults:
+    _title: 'Add Notification'
+    _entity_form: default_template_collection.add
+  requirements:
+    _permission: 'manage tmgmt courier'
+
+entity.default_template_collection.delete_form:
+  path: '/admin/config/communication/courier/template_collections/{template_collection}/delete'
+  defaults:
+    _title: 'Delete Notification'
+    _entity_form: default_template_collection.delete
+  requirements:
+    _permission: 'manage tmgmt courier'
+
+entity.default_template_collection.receiver:
+  path: '/admin/config/communication/courier/template_collections/{template_collection}/receiver'
+  defaults:
+    _title: 'Change recipient'
+    _entity_form: default_template_collection.receiver
+  requirements:
+    _permission: 'manage tmgmt courier'
