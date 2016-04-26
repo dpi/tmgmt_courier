@@ -2,9 +2,11 @@
 
 namespace Drupal\tmgmt_courier;
 
+use Drupal\Core\Session\AccountInterface;
 use Drupal\courier\Entity\TemplateCollection;
 use Drupal\courier\MessageQueueItemInterface;
 use Drupal\user\Entity\User;
+use Drupal\user\UserInterface;
 
 /**
  * Represents a TMGMT Notification.
@@ -20,8 +22,10 @@ class Notification {
    *   The type of the notification.
    * @param array $tokens
    *   Array of tokens.
+   * @param \Drupal\Core\Session\AccountInterface $default_identity
+   *   The default identity.
    */
-  public function sendNotification($type, array $tokens) {
+  public function sendNotification($type, array $tokens, AccountInterface $default_identity) {
     $register = \Drupal::configFactory()->get('tmgmt_courier.register');
     if ($template_collections = $register->get($type)) {
       $mqi = NULL;
@@ -32,7 +36,12 @@ class Notification {
             $template_collection->setTokenValue($token_key, $value);
           }
           /** @var \Drupal\user\Entity\User $identity */
-          $identity = User::load($properties['identity']);
+          if (isset($properties['identity'])) {
+            $identity = User::load($properties['identity']);
+          }
+          else {
+            $identity = $default_identity;
+          }
           $mqi = \Drupal::service('courier.manager')
             ->sendMessage($template_collection, $identity);
         }

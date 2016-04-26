@@ -23,16 +23,17 @@ class RecipientForm extends EntityForm {
       '#description' => $this->t('Select the receiver.'),
     ];
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
+      '#submit' => ['::submitForm', '::save'],
       '#value' => t('Save'),
-    );
-    $form['actions']['cancel'] = array(
+    ];
+    $form['actions']['cancel'] = [
       '#type' => 'link',
       '#title' => $this->t('Cancel'),
-      '#url' => Url::fromRoute('entity.default_template_collection.collection'),
-    );
+      '#url' => Url::fromRoute('entity.tmgmt_template_collection.collection'),
+    ];
 
     return $form;
   }
@@ -50,15 +51,8 @@ class RecipientForm extends EntityForm {
     $value[$notification_id]['identity'] = $form_state->getValue('identity');
     $register->set(key($templates), $value);
     $register->save();
-    drupal_set_message(t('Notification deleted.'));
-    $form_state->setRedirect('entity.default_template_collection.collection');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getFormId() {
-    return 'tmgmt_notification_receiver';
+    drupal_set_message(t('Recipient changed'));
+    $form_state->setRedirect('entity.tmgmt_template_collection.collection');
   }
 
 }

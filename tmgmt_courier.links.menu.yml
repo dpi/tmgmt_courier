@@ -2,4 +2,4 @@ tmgmt_courier.config:
   title: 'Template collections'
   parent: system.admin_config_communication
   description: 'List of template collections.'
-  route_name: entity.default_template_collection.collection
+  route_name: entity.tmgmt_template_collection.collection

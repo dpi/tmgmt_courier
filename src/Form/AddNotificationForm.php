@@ -77,7 +77,7 @@ class AddNotificationForm extends EntityForm {
     $form['actions']['cancel'] = array(
       '#type' => 'link',
       '#title' => $this->t('Cancel'),
-      '#url' => Url::fromRoute('entity.default_template_collection.collection'),
+      '#url' => Url::fromRoute('entity.tmgmt_template_collection.collection'),
     );
 
     return $form;
@@ -121,7 +121,7 @@ class AddNotificationForm extends EntityForm {
     $register->set($type, $value);
     $register->save();
 
-    $form_state->setRedirect('entity.default_template_collection.collection');
+    $form_state->setRedirect('entity.tmgmt_template_collection.collection');
   }
 
   /**

@@ -121,8 +121,11 @@ class NotificationForm extends ConfigFormBase {
       if ($template_collections = TemplateCollection::loadMultiple(array_keys($template_collection_trigger))) {
         /** @var \Drupal\courier\Entity\TemplateCollection $template_collection */
         foreach ($template_collections as $template_collection) {
-          /** @var \Drupal\user\Entity\User $identity */
-          $identity = User::load($template_collection_trigger[$template_collection->id()]['identity']);
+          $identity = NULL;
+          if (isset($template_collection_trigger[$template_collection->id()]['identity'])) {
+            /** @var \Drupal\user\Entity\User $identity */
+            $identity = User::load($template_collection_trigger[$template_collection->id()]['identity']);
+          }
           $definition = $types = \Drupal::service('tmgmt_courier.trigger_repository')
             ->getDefinitionOfType($template_collection_type);
           /** @var \Drupal\courier\Entity\CourierContext $context */
@@ -132,7 +135,7 @@ class NotificationForm extends ConfigFormBase {
               '@title' => $definition['label'],
               '@module' => \Drupal::moduleHandler()->getName($context->label()),
               '@status' => $template_collection_trigger[$template_collection->id()]['enabled'] ? $this->t('enabled') : $this->t('disabled'),
-              '@receiver' => $identity->getDisplayName(),
+              '@receiver' => $identity ? $identity->getDisplayName() : t('default'),
             ]),
             '#description' => $definition['description'],
             '#template_collection' => $template_collection,
@@ -215,12 +218,12 @@ class NotificationForm extends ConfigFormBase {
     $destination = \Drupal::destination()->getAsArray();
     $links['delete'] = [
       'title' => $this->t('Delete'),
-      'url' => new Url('entity.default_template_collection.delete_form', ['template_collection' => $notification_id]),
+      'url' => new Url('entity.tmgmt_template_collection.delete_form', ['tmgmt_template_collection' => $notification_id]),
       'query' => $destination,
     ];
     $links['recipient'] = [
       'title' => $this->t('Change receiver'),
-      'url' => new Url('entity.default_template_collection.recipient', ['template_collection' => $notification_id]),
+      'url' => new Url('entity.tmgmt_template_collection.recipient', ['tmgmt_template_collection' => $notification_id]),
       'query' => $destination,
     ];
 

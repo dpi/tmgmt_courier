@@ -5,10 +5,10 @@ namespace Drupal\tmgmt_courier\Entity;
 use Drupal\courier\Entity\TemplateCollection;
 
 /**
- * Defines a default_template_collection entity.
+ * Defines a tmgmt_template_collection entity.
  *
  * @ContentEntityType(
- *   id = "default_template_collection",
+ *   id = "tmgmt_template_collection",
  *   label = @Translation("Template collection"),
  *   handlers = {
  *     "access" = "Drupal\Core\Entity\EntityAccessControlHandler",
@@ -21,18 +21,17 @@ use Drupal\courier\Entity\TemplateCollection;
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "views_data" = "Drupal\views\EntityViewsData"
  *   },
- *   base_table = "default_template_collection",
+ *   base_table = "tmgmt_template_collection",
  *   entity_keys = {
  *     "id" = "id",
  *   },
  *   links = {
- *     "canonical" = "/admin/config/communication/courier/template_collections/{template_collection}",
  *     "add-form" = "/admin/config/communication/courier/template_collections/add",
- *     "delete-form" = "/admin/config/communication/courier/template_collections/{template_collection}/delete",
- *     "recipient" = "/admin/config/communication/courier/template_collections/{template_collection}/recipient",
+ *     "delete-form" = "/admin/config/communication/courier/template_collections/{tmgmt_template_collection}/delete",
+ *     "recipient" = "/admin/config/communication/courier/template_collections/{tmgmt_template_collection}/recipient",
  *   }
  * )
  */
-class DefaultTemplateCollection extends TemplateCollection {
+class TMGMTTemplateCollection extends TemplateCollection {
 
 }

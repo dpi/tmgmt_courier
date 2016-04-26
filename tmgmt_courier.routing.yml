@@ -1,4 +1,4 @@
-entity.default_template_collection.collection:
+entity.tmgmt_template_collection.collection:
   path: '/admin/config/communication/courier/template_collections'
   defaults:
     _form: '\Drupal\tmgmt_courier\Form\NotificationForm'
@@ -6,26 +6,26 @@ entity.default_template_collection.collection:
   requirements:
     _permission: 'manage tmgmt courier'
 
-entity.default_template_collection.add_form:
+entity.tmgmt_template_collection.add_form:
   path: '/admin/config/communication/courier/template_collections/add'
   defaults:
     _title: 'Add Notification'
-    _entity_form: default_template_collection.add
+    _entity_form: tmgmt_template_collection.add
   requirements:
     _permission: 'manage tmgmt courier'
 
-entity.default_template_collection.delete_form:
-  path: '/admin/config/communication/courier/template_collections/{template_collection}/delete'
+entity.tmgmt_template_collection.delete_form:
+  path: '/admin/config/communication/courier/template_collections/{tmgmt_template_collection}/delete'
   defaults:
     _title: 'Delete Notification'
-    _entity_form: default_template_collection.delete
+    _entity_form: tmgmt_template_collection.delete
   requirements:
     _permission: 'manage tmgmt courier'
 
-entity.default_template_collection.recipient:
-  path: '/admin/config/communication/courier/template_collections/{template_collection}/recipient'
+entity.tmgmt_template_collection.recipient:
+  path: '/admin/config/communication/courier/template_collections/{tmgmt_template_collection}/recipient'
   defaults:
     _title: 'Change recipient'
-    _entity_form: default_template_collection.recipient
+    _entity_form: tmgmt_template_collection.recipient
   requirements:
     _permission: 'manage tmgmt courier'
